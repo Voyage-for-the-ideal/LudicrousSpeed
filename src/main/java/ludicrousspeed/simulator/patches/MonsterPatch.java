@@ -10,8 +10,6 @@ import com.megacrit.cardcrawl.actions.animations.AnimateSlowAttackAction;
 import com.megacrit.cardcrawl.actions.animations.SetAnimationAction;
 import com.megacrit.cardcrawl.actions.common.EscapeAction;
 import com.megacrit.cardcrawl.actions.common.MonsterStartTurnAction;
-import com.megacrit.cardcrawl.actions.common.SpawnMonsterAction;
-import com.megacrit.cardcrawl.actions.unique.SummonGremlinAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -21,22 +19,6 @@ import ludicrousspeed.LudicrousSpeedMod;
 import savestate.fastobjects.AnimationStateFast;
 
 public class MonsterPatch {
-    @SpirePatch(
-            clz = AbstractMonster.class,
-            paramtypez = {},
-            method = "die"
-    )
-    public static class MonsterDeathPatch {
-        public static void Postfix(AbstractMonster _instance) {
-            if (LudicrousSpeedMod.plaidMode) {
-                _instance.deathTimer = .0F;
-                _instance.isDying = true;
-                _instance.isDead = true;
-                _instance.dispose();
-            }
-        }
-    }
-
     @SpirePatch(
             clz = AbstractMonster.class,
             paramtypez = {boolean.class},
@@ -167,34 +149,6 @@ public class MonsterPatch {
     }
 
     @SpirePatch(
-            clz = SpawnMonsterAction.class,
-            paramtypez = {},
-            method = "update"
-    )
-    public static class SpawnMonsterAnimationPatch {
-        public static void Prefix(SpawnMonsterAction _instance) {
-            ReflectionHacks.setPrivate(_instance, SpawnMonsterAction.class, "targetSlot", -99);
-            ReflectionHacks
-                    .setPrivate(_instance, SpawnMonsterAction.class, "useSmartPositioning", false);
-
-            if (LudicrousSpeedMod.plaidMode) {
-                _instance.isDone = true;
-            }
-        }
-    }
-
-    @SpirePatch(
-            clz = SummonGremlinAction.class,
-            paramtypez = {},
-            method = "getSmartPosition"
-    )
-    public static class SummonGremlinActionPatch {
-        public static SpireReturn Prefix(SummonGremlinAction _instance) {
-            return SpireReturn.Return(0);
-        }
-    }
-
-    @SpirePatch(
             clz = AnimateFastAttackAction.class,
             paramtypez = {},
             method = "update"
@@ -221,6 +175,20 @@ public class MonsterPatch {
                 _instance.intent = move.intent;
                 _instance.nextMove = move.nextMove;
                 _instance.setIntentBaseDmg(move.baseDamage);
+                // Match vanilla createIntent: compute intentDmg and the multi-damage
+                // markers so decision code reading them gets correct values
+                if (move.baseDamage > -1) {
+                    ReflectionHacks.privateMethod(AbstractMonster.class, "calculateDamage", int.class)
+                                   .invoke(_instance, move.baseDamage);
+                    if (move.isMultiDamage) {
+                        ReflectionHacks.setPrivate(_instance, AbstractMonster.class, "intentMultiAmt",
+                                move.multiplier);
+                        ReflectionHacks.setPrivate(_instance, AbstractMonster.class, "isMultiDmg", true);
+                    } else {
+                        ReflectionHacks.setPrivate(_instance, AbstractMonster.class, "intentMultiAmt", -1);
+                        ReflectionHacks.setPrivate(_instance, AbstractMonster.class, "isMultiDmg", false);
+                    }
+                }
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();
@@ -237,7 +205,11 @@ public class MonsterPatch {
             if (LudicrousSpeedMod.plaidMode) {
                 if (_instance.escapeTimer != 0) {
                     _instance.escaped = true;
-                    _instance.escapeTimer = -.5F;
+                    // Converge immediately so AbstractMonster.update stops calling
+                    // updateEscapeAnimation every frame (escapeTimer == 0 is the
+                    // "no escape animation running" state in vanilla)
+                    _instance.escapeTimer = 0;
+                    _instance.state = new AnimationStateFast();
                     if (AbstractDungeon.getMonsters().areMonstersDead() && !AbstractDungeon
                             .getCurrRoom().isBattleOver && !AbstractDungeon
                             .getCurrRoom().cannotLose) {
@@ -245,7 +217,6 @@ public class MonsterPatch {
                     }
                 }
 
-                _instance.state = new AnimationStateFast();
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();
@@ -259,11 +230,14 @@ public class MonsterPatch {
     public static class BetterMonsterStartTurnPatch {
         @SpirePrefixPatch
         public static SpireReturn betterUpdate(MonsterStartTurnAction action) {
-            if (!action.isDone) {
-                AbstractDungeon.getCurrRoom().monsters.applyPreTurnLogic();
+            if (LudicrousSpeedMod.plaidMode) {
+                if (!action.isDone) {
+                    AbstractDungeon.getCurrRoom().monsters.applyPreTurnLogic();
+                }
+                action.isDone = true;
+                return SpireReturn.Return(null);
             }
-            action.isDone = true;
-            return SpireReturn.Return(null);
+            return SpireReturn.Continue();
         }
     }
 

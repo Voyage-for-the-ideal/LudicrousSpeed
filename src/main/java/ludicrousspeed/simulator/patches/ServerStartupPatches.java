@@ -15,18 +15,6 @@ public class ServerStartupPatches {
         @SpirePostfixPatch
         public static void afterStart(CardCrawlGame game) {
             if (LudicrousSpeedMod.plaidMode) {
-//                System.err.println("Skipping Splash Screen for Char Select");
-//
-//                // Sets the current dungeon
-//                Settings.seed = 123L;
-//                AbstractDungeon.generateSeeds();
-//
-//                // TODO this needs to be the actual character class or bad things happen
-//                new Exordium(CardCrawlGame.characterManager
-//                        .getCharacter(AbstractPlayer.PlayerClass.IRONCLAD), new ArrayList<>());
-//
-//                AbstractDungeon.currMapNode.room = new EmptyRoom();
-
                 CardCrawlGame.mode = CardCrawlGame.GameMode.SPLASH;
             }
         }

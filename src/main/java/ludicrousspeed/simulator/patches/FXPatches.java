@@ -18,7 +18,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
-import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.TimeWarpPower;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
@@ -235,19 +234,6 @@ public class FXPatches {
     }
 
 
-    @SpirePatch(
-            clz = LocalizedStrings.class,
-            method = "getRelicStrings"
-    )
-    public static class NoLocalRelicStringsPatch {
-        public static SpireReturn Prefix(LocalizedStrings _instance, String relicName) {
-//            if (LudicrousSpeedMod.plaidMode) {
-//                return SpireReturn.Return(new RelicStrings());
-//            }
-            return SpireReturn.Continue();
-        }
-    }
-
     public static final CardStrings MOCK_CARD_STRINGS = CardStrings.getMockCardString();
 
     @SpirePatch(
@@ -288,25 +274,6 @@ public class FXPatches {
             return SpireReturn.Continue();
         }
     }
-
-    @SpirePatch(
-            clz = DamageAction.class,
-            paramtypez = {},
-            method = "update"
-    )
-    public static class ForceDamageActionPatch {
-        public static void Prefix(DamageAction _instance) {
-            _instance.isDone = true;
-        }
-    }
-
-    private RelicStrings getMockRelicStrings() {
-        RelicStrings result = new RelicStrings();
-
-        result.DESCRIPTIONS = new String[]{"[MISSING_0]", "[MISSING_1]", "[MISSING_2]", "[MISSING_3]"};
-        return result;
-    }
-
 
     @SpirePatch(clz = AbstractCreature.class, method = "decrementBlock")
     public static class NoFXOnDecrementBlockPatch {

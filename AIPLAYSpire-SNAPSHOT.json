@@ -1,0 +1,190 @@
+{
+  "source_repository": "Voyage-for-the-ideal/aiplayspire",
+  "source_head": "84d10b4e9dd04ec7cc668d7b757e4faeba7cec75",
+  "source_directory": "LudicrousSpeed",
+  "mod_version": "1.2.0",
+  "upstream": "boardengineer/LudicrousSpeed",
+  "includes_uncommitted_sources": true,
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "62230f88396d5c040aa7a3d789f9022dd7612ea457540b15357d2f555591e740",
+      "git_blob": "097c3cd21df3210bd2ed51acaf62f765f45e75dd"
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "8bc67bca876cb97c137fa23b3b180ba74e88343f8cf969b5bb994389269c5da3",
+      "git_blob": "e88ad23b9648e13361d971825db700eeb139e6bb"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/Controller.java",
+      "sha256": "25cd50d5d36b3b6c8f9812fa59198848410d7c75989b98d4d54ac25a0122e129",
+      "git_blob": "3d653ee77e75fa18afa80970a005657c5bf97430"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/LudicrousSpeedMod.java",
+      "sha256": "4bfc478bb5f91f775823b0cf1683a6b4c4864e3557f8092fdf395800fd966854",
+      "git_blob": "c680b352b1a5d9ba538d3649ad5d6b5a64ec7524"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/ActionSimulator.java",
+      "sha256": "a764014bc37e94a2a86ca56ddbfd61c9a811de0749aedb9a51f822c7b94cf9cf",
+      "git_blob": "311c0434a2cba2b6dddd3a58552ed86a2737059f"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/CardCommand.java",
+      "sha256": "7d1c87f69776ac6dc20585e1820e5874519cc5b8f8bbc13ccc4cde9f8013c06f",
+      "git_blob": "269b3b55161f0f6c57d17c21996cb9c7e6b41412"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/CardRewardSelectCommand.java",
+      "sha256": "24b837362ef608df657c84e19991917a1781d18ead4983d4b72f66eaef67ec77",
+      "git_blob": "4d9c580a7d47e19e2b4de3743ee61939ed93d972"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/Command.java",
+      "sha256": "c04c75ac3b214bd5e7e4abb952b624564c9a27f1f59ea2d103f62f92ce63578c",
+      "git_blob": "90af40c4c169d6efa50c453029601c19a5700f28"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/CommandList.java",
+      "sha256": "e9ba077978eccab0efb02e81dd9f00a7dadd425dbcc11757c9053c3f134dc83f",
+      "git_blob": "d6c2adb1541f187fad6b2212934b9009a49a3461"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/EndCommand.java",
+      "sha256": "9a012f955f21e0c9a442df9193a15fb6e79b579c4b795b379ebadee2ad31cf86",
+      "git_blob": "9639f5edde2b380b6c095f960f20a6e12a00cc63"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/GridSelectCommand.java",
+      "sha256": "4dc90575c4dfd164fdad071cd548f01fb4f34ba58087e3b3dd71f2d41feec9f5",
+      "git_blob": "3bb77df5af99d7dc09decb2f5eb11a2741b25d17"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/GridSelectConfirmCommand.java",
+      "sha256": "7a5d29212112eea335965d5466a8eeaeccf7bad4d6b055baf3fed1e8052280e5",
+      "git_blob": "c4b1f6a0734284b1db2815b1fc1086713567d593"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/HandSelectCommand.java",
+      "sha256": "2d124ca03e3bd32be7921184c50df9fcbcae1dff374b338d117cfbb5192e2527",
+      "git_blob": "ac2776391f5b3761a5722090f7a725ed75ef3dd3"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/HandSelectConfirmCommand.java",
+      "sha256": "ed6818283eb802c414ef4b26863104b577475882fd3ed10b354640977acc67ea",
+      "git_blob": "9f1e67c6b9caa3c5c408111435aa61011494f9c0"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/PotionCommand.java",
+      "sha256": "539a91e0d65a27e797d068468fd5205ec82a725a4a1a2b99d52b0fb8fab4d8d1",
+      "git_blob": "f2541d2d086797542695e7c1f7512becd44ae9b1"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/StateDebugInfo.java",
+      "sha256": "15a510f664e48db827535ce33882a6f0abe632095b3b06c6037ecd57a4f07305",
+      "git_blob": "29b25a19353686d14196d55a8fe76b238f22f4c4"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/commands/StateDiffChecker.java",
+      "sha256": "ea5657388add625d1ec4e3ca34dedfc24a90ddd084783c535d833dcded1b3b8e",
+      "git_blob": "bd13e48a78ebad7f4538e1bf358630540a66e1dc"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/CardPatches.java",
+      "sha256": "7989ad15b8d3b6b27150ae3e8f384d2b254162fa58925ae83706497c31dbcf63",
+      "git_blob": "1bd2ee27165f72dfe88793999a821cb16bf65f5f"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/DamageActionPatches.java",
+      "sha256": "aa173eaf9361198865b91dfa31543e50e8ba0dbdcec188febe1ba6ed2fb6adfb",
+      "git_blob": "04e0676c6aa7c3fd4c34f0103aaa8b98cfdf0b16"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/EndTurnPatches.java",
+      "sha256": "14df5e5ce6b488b81e9d6119e119cd33d31fc65d7982c906e3ec607677bafaeb",
+      "git_blob": "e92179caee320219a7c71f9480e29c2819b1bb25"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/FXPatches.java",
+      "sha256": "2414ccbdadb0b82920632961c2fbd4e6ca59132e110ee13e6decd997809af0bf",
+      "git_blob": "6949d7eec27fbda4cf2a61b0af85d7a66a43edfc"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/FastExhaustPatches.java",
+      "sha256": "ba0f62f58409a1c0aadfe03d5830627776c4da6fb8aa2c64580fe723e873e956",
+      "git_blob": "25eca8bc542e2335fa1cf3f56f32f2113a701c5f"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/IroncladPatches.java",
+      "sha256": "c79bc0b3680c71f14e2a2cc913f267f171433979e729033807cd64304defb37b",
+      "git_blob": "452cc303c586852b6347bb4a8411a56d2f76561a"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/MetricsPatches.java",
+      "sha256": "c487ecb0d7e2756d181cd0e91fdbbb2abe8bcc270fcce39e7132fe368a6790f1",
+      "git_blob": "5a9ba8cff1f3357d05ab3f03e14a678134be65a5"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/MonsterPatch.java",
+      "sha256": "f6a1918d20e38fb76c30fc771665d4b24cab2b3110b1fd7fc3756be946a906bd",
+      "git_blob": "cdc1ee10ffc94b096003cf20ed4e151d98475524"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/MusicPatches.java",
+      "sha256": "42938b8795e47380caf710e053a73018e9d74f3a3958ca2d9b229c835489bb7c",
+      "git_blob": "8914d1f566425da437f5162e01ab46240a94237e"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/PlayerPatches.java",
+      "sha256": "75e355ce165113f4dc8769a91160511f223646f516822bf52bdd06656cfd7f36",
+      "git_blob": "21a0ac7993fc937236cebeca904bf32810e66b9a"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/PotionPatches.java",
+      "sha256": "26cfaefcb0c8a1a6f33ae9e0c981921bc57e445ec7b92a9684edb51308899c49",
+      "git_blob": "f1fe23ff58009ebc7d0d09fc0d4b7f6fd33d29a0"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/PowerPatches.java",
+      "sha256": "dc972e1f44cd00f22f81dda1beb2a36c33a6d81860198ed236841938324930f0",
+      "git_blob": "74556ad6c956e494deec4630415f9e610f456a6f"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/RelicPatches.java",
+      "sha256": "b13377dab7f6aee98f004955011dd9fef0cf8e79c55276a13c27f494086595be",
+      "git_blob": "b22c2bfb4fda83006ad7a58388fdf3325fe7a80b"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/ScreenPatches.java",
+      "sha256": "40a47ce6e4a953a373c27fa0f8108121413f454542d5cf1bfef6929940064e75",
+      "git_blob": "cb1878cc77ea1a75b2d92f65af79f2c4091782cc"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/ServerStartupPatches.java",
+      "sha256": "48220ba089a1126fa424d53a6d80e51003a6a2dd98bb843c018023f908c90add",
+      "git_blob": "436b5cdc1f652672ea801446cf2391f512f8e179"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/SilentPatches.java",
+      "sha256": "fdc94a5dbc0a33f4d1bd35f16ea836ad14efb7cd9b5ce68aa1ec7f644b4a7301",
+      "git_blob": "a8b1007a96432362a8b83d50289c03e297db354f"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/TopPanelPatches.java",
+      "sha256": "33293819b9b6b724d2d9deebcc87acdb9047b3a99f56f0119225acdf4e06ea88",
+      "git_blob": "65c1eb2bf7590c03a8c4cc0039a6b5572e946fdd"
+    },
+    {
+      "path": "src/main/java/ludicrousspeed/simulator/patches/UnlockTrackerPatches.java",
+      "sha256": "6778d0a7c03b68b60949599cb9ee2a1104545015d1a0a7375317ae412ec9348b",
+      "git_blob": "ffab0289a43c07734e6da87b2b6595af75718285"
+    },
+    {
+      "path": "src/main/resources/ModTheSpire.json",
+      "sha256": "88ce43341455beaa033f67e1a88c1e592007904c544898168936ded4df79f542",
+      "git_blob": "cedf8cef568203011f2770eb05497c1b3c846b6b"
+    }
+  ]
+}

@@ -6,10 +6,9 @@ import com.google.gson.JsonParser;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.select.HandCardSelectScreen;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 public class HandSelectCommand implements Command {
+    public int getCardIndex() { return cardIndex; }
+
     private final int cardIndex;
     public final String diffStateString;
 
@@ -34,9 +33,15 @@ public class HandSelectCommand implements Command {
 
     @Override
     public void execute() {
+        if (!StateDiffChecker.check(diffStateString, this.toString())) {
+            return;
+        }
+
         AbstractDungeon.handCardSelectScreen.hoveredCard = AbstractDungeon.player.hand.group
                 .get(cardIndex);
 
+        // selectHoveredCard is private in this STS version; if the signature
+        // changes on a game update the reflection silently fails
         ReflectionHacks.privateMethod(HandCardSelectScreen.class, "selectHoveredCard")
                        .invoke(AbstractDungeon.handCardSelectScreen);
     }
@@ -50,20 +55,6 @@ public class HandSelectCommand implements Command {
 
 
         return cardCommandJson.toString();
-    }
-
-    public static void makeHandSelectScreenChoice(int choice) {
-        HandCardSelectScreen screen = AbstractDungeon.handCardSelectScreen;
-        screen.hoveredCard = AbstractDungeon.player.hand.group.get(choice);
-        screen.hoveredCard.setAngle(0.0f, false); // This might not be necessary
-        try {
-            Method hotkeyCheck = HandCardSelectScreen.class.getDeclaredMethod("selectHoveredCard");
-            hotkeyCheck.setAccessible(true);
-            hotkeyCheck.invoke(screen);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-            throw new RuntimeException("selectHoveredCard method somehow can't be called.");
-        }
     }
 
     @Override

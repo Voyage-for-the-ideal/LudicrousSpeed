@@ -4,6 +4,7 @@ import basemod.ReflectionHacks;
 import com.google.gson.JsonObject;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.select.HandCardSelectScreen;
+import ludicrousspeed.LudicrousSpeedMod;
 
 public class HandSelectConfirmCommand implements Command {
     private final String diffStateString;
@@ -19,13 +20,26 @@ public class HandSelectConfirmCommand implements Command {
 
     @Override
     public void execute() {
+        if (!StateDiffChecker.check(diffStateString, this.toString())) {
+            return;
+        }
+
         HandCardSelectScreen screen = AbstractDungeon.handCardSelectScreen;
 
+        // Redundant safety net: prep() and HandSelectScreenState already
+        // point the screen's hand at player.hand
         ReflectionHacks
                 .setPrivate(AbstractDungeon.handCardSelectScreen, HandCardSelectScreen.class, "hand", AbstractDungeon.player.hand);
 
         screen.button.hb.clicked = true;
         screen.update();
+
+        if (LudicrousSpeedMod.plaidMode && AbstractDungeon.isScreenUp) {
+            // Vanilla waits 0.25 seconds before closing a hand-selection screen.
+            // The blocking simulator does not advance render time, so close it now.
+            ReflectionHacks.setPrivate(screen, HandCardSelectScreen.class, "waitToCloseTimer", 0.0F);
+            screen.update();
+        }
     }
 
     @Override

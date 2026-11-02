@@ -1,11 +1,7 @@
 package ludicrousspeed.simulator.commands;
 
 import basemod.ReflectionHacks;
-import com.megacrit.cardcrawl.actions.utility.ScryAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.curses.Clumsy;
-import com.megacrit.cardcrawl.cards.status.Dazed;
-import com.megacrit.cardcrawl.cards.status.VoidCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -21,55 +17,38 @@ import savestate.PotionState;
 import java.util.*;
 
 public final class CommandList {
-    @Deprecated
-    public static List<Command> getAvailableCommands() {
-        return getAvailableCommands(null);
-    }
-
-    @Deprecated
-    public static List<Command> getAvailableCommands(Comparator<AbstractCard> playHeuristic) {
-        return getAvailableCommands(playHeuristic, new HashMap<>());
-    }
-
     public static List<Command> getAvailableCommands(Comparator<AbstractCard> cardComparator, HashMap<Class, Comparator<AbstractCard>> actionHeuristics) {
         List<Command> commands = new ArrayList<>();
         AbstractPlayer player = AbstractDungeon.player;
         List<AbstractCard> hand = player.hand.group;
         List<AbstractPotion> potions = player.potions;
 
-        List<AbstractMonster> monsters = AbstractDungeon.currMapNode.room.monsters.monsters;
         Set<String> seenCommands = new HashSet<>();
 
         if (shouldCheckForPlays()) {
+            List<AbstractMonster> monsters = AbstractDungeon.currMapNode.room.monsters.monsters;
+
             for(int i = 0; i < hand.size(); i++) {
                 AbstractCard card = hand.get(i);
-
-                // Only populate the first time you've seen a card with this specific {name X upgraded}
-                String setName = card.cardID + (card.upgraded ? "+" : "");
-                int oldCount = seenCommands.size();
-                seenCommands.add(setName);
-                if (oldCount == seenCommands.size()) {
-                    continue;
-                }
 
                 if (card.target == AbstractCard.CardTarget.ENEMY || card.target == AbstractCard.CardTarget.SELF_AND_ENEMY) {
                     for (int j = 0; j < monsters.size(); j++) {
                         AbstractMonster monster = monsters.get(j);
                         if (card.canUse(player, monster) && !monster.isDeadOrEscaped()) {
-                            commands.add(new CardCommand(i, j, String.format(card.cardID)));
+                            addCommandIfNew(commands, seenCommands, new CardCommand(i, j, card.cardID));
                         }
                     }
                 }
 
                 if (card.target == AbstractCard.CardTarget.ALL_ENEMY || card.target == AbstractCard.CardTarget.ALL) {
                     if (card.canUse(player, null)) {
-                        commands.add(new CardCommand(i, card.cardID));
+                        addCommandIfNew(commands, seenCommands, new CardCommand(i, card.cardID));
                     }
                 }
 
                 if (card.target == AbstractCard.CardTarget.SELF || card.target == AbstractCard.CardTarget.SELF_AND_ENEMY || card.target == AbstractCard.CardTarget.NONE) {
                     if (card.canUse(player, null)) {
-                        commands.add(new CardCommand(i, card.cardID));
+                        addCommandIfNew(commands, seenCommands, new CardCommand(i, card.cardID));
                     }
                 }
             }
@@ -82,14 +61,9 @@ public final class CommandList {
                     continue;
                 }
 
-                // Dedupe potions
-                String setName = potion.name;
-                int oldCount = seenCommands.size();
-                seenCommands.add(setName);
-                if (oldCount == seenCommands.size()) {
-                    continue;
-                }
-
+                // Note: no dedupe here. seenCommands is fresh per call, and
+                // the old display-name dedupe made a second same-named potion
+                // (e.g. two Strength Potions) permanently unplayable
                 if (potion.targetRequired) {
                     for (int j = 0; j < monsters.size(); j++) {
                         AbstractMonster monster = monsters.get(j);
@@ -109,8 +83,9 @@ public final class CommandList {
 
                 ArrayList<Integer> orderedIndeces = new ArrayList<>();
 
-                if (actionHeuristics
-                        .containsKey(AbstractDungeon.actionManager.currentAction.getClass())) {
+                Comparator<AbstractCard> heuristic = actionHeuristics
+                        .get(AbstractDungeon.actionManager.currentAction.getClass());
+                if (heuristic != null) {
                     HashMap<Integer, AbstractCard> indexToCardMap = new HashMap<>();
 
                     for (int i = 0; i < AbstractDungeon.player.hand.group.size(); i++) {
@@ -118,8 +93,6 @@ public final class CommandList {
                     }
 
                     indexToCardMap.entrySet().stream().sorted((e1, e2) -> {
-                        Comparator<AbstractCard> heuristic = actionHeuristics
-                                .get(AbstractDungeon.actionManager.currentAction.getClass());
                         int compValue = heuristic.compare(e1.getValue(), e2.getValue());
                         if (compValue == 0) {
                             return e1.getKey() - e2.getKey();
@@ -144,39 +117,13 @@ public final class CommandList {
         if (isInGridSelect()) {
             for (int i = 0; i < AbstractDungeon.gridSelectScreen.targetGroup.size(); i++) {
                 AbstractCard card = AbstractDungeon.gridSelectScreen.targetGroup.group.get(i);
-                if (!card.isGlowing) {
-                    // Weak hack to only scry basics curses and statuses
-                    boolean canClick = true;
-
-                    if (AbstractDungeon.actionManager.currentAction instanceof ScryAction) {
-                        canClick = false;
-                        if (card.type == AbstractCard.CardType.STATUS) {
-                            if (card.cardID != Dazed.ID && card.cardID != VoidCard.ID) {
-                                canClick = true;
-                            }
-                        }
-
-                        if (card.type == AbstractCard.CardType.CURSE) {
-                            if (card.cardID != Clumsy.ID) {
-                                canClick = true;
-                            }
-                        }
-
-                        if (card.hasTag(AbstractCard.CardTags.STARTER_DEFEND) || card
-                                .hasTag(AbstractCard.CardTags.STARTER_STRIKE)) {
-                            canClick = true;
-                        }
-                    }
-
-
-                    if (canClick) {
-                        commands.add(new GridSelectCommand(i));
-                    }
+                if (isGridCardSelectable(card)) {
+                    commands.add(new GridSelectCommand(i));
                 }
             }
 
             if (isGridScreenConfirmAvailable()) {
-                commands.add(GridSelectConfrimCommand.INSTANCE);
+                commands.add(GridSelectConfirmCommand.INSTANCE);
             }
         }
 
@@ -194,6 +141,22 @@ public final class CommandList {
         return commands;
     }
 
+    /**
+     * Every non-glowing card in a GRID screen is a candidate for selection.
+     *
+     * Scry used to have a card-ID/type allowlist here. That was incorrect: the
+     * vanilla Scry screen can show and select any card, including ordinary
+     * attack and skill cards. A glowing card has already been selected by the
+     * screen and must not be emitted as a second click command.
+     */
+    static boolean isGridCardSelectable(AbstractCard card) {
+        return isGridCardSelectable(card.isGlowing);
+    }
+
+    static boolean isGridCardSelectable(boolean isGlowing) {
+        return !isGlowing;
+    }
+
     private static boolean shouldCheckForPlays() {
         return isInDungeon() &&
                 !(AbstractDungeon.player.isDead || AbstractDungeon.player.isDying) &&
@@ -209,8 +172,9 @@ public final class CommandList {
     }
 
     private static boolean isEndCommandAvailable() {
-        return isInDungeon() && AbstractDungeon
-                .getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT && !AbstractDungeon.isScreenUp;
+        // Same guards as shouldCheckForPlays: alive player, in combat, no
+        // screen up, and no actions in flight
+        return shouldCheckForPlays();
     }
 
     private static boolean isInGridSelect() {
@@ -251,6 +215,12 @@ public final class CommandList {
             return screen.forUpgrade || screen.forTransform || screen.forPurge || screen.anyNumber;
         }
         return false;
+    }
+
+    private static void addCommandIfNew(List<Command> commands, Set<String> seenCommands, Command command) {
+        if (seenCommands.add(command.encode())) {
+            commands.add(command);
+        }
     }
 
     private CommandList() {
